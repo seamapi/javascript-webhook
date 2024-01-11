@@ -98,13 +98,11 @@ app.post(
       data = webhook.verify(payload, headers)
     } catch {
       return res.status(400).send()
-
     }
 
     storeEvent(data, (err) => {
       if (err != null) {
         return res.status(500).send()
-
       }
       res.status(204).send()
     })
