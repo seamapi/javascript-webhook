@@ -78,7 +78,7 @@ $ npm install -D seamapi-types
 First, create a webhook using the Seam API or Seam Console
 and obtain a Seam webhook secret.
 
-_This example is for [Express], see the [Svix docs with more framework specific examples](https://docs.svix.com/receiving/verifying-payloads/how)._
+_This example is for [Express], see the [Svix docs for more examples in specific frameworks](https://docs.svix.com/receiving/verifying-payloads/how)._
 
 ```js
 import { SeamWebhook } from '@seamapi/webhook'
