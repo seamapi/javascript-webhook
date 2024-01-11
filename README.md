@@ -85,6 +85,8 @@ import { SeamWebhook } from '@seamapi/webhook'
 import express from 'express'
 import bodyParser from 'body-parser'
 
+import { storeEvent } from './store-event.js'
+
 const app = express()
 
 const webhook = new SeamWebhook(process.env.SEAM_WEBHOOK_SECRET)
