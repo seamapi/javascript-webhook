@@ -1,6 +1,6 @@
 {
   "name": "@seamapi/webhook",
-  "version": "0.2.0",
+  "version": "1.0.0-rc.0",
   "description": "Webhook SDK for the Seam API written in TypeScript.",
   "type": "module",
   "main": "index.js",
