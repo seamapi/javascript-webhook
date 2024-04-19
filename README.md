@@ -27,10 +27,11 @@ in your application.
 
 ## Installation
 
-_This is a low-level package meant for applications and libraries with particular dependency requirements.
-Before using this package, ensure you understand the installation and updating instructions.
-This SDK is entirely contained in the [seam package]. Seam recommends using that package instead
-for simpler dependency management._
+> [!IMPORTANT]
+> This is a low-level package meant for applications and libraries with particular dependency requirements.
+> Before using this package, ensure you understand the installation and updating instructions.
+> This SDK is entirely contained in the [seam package].
+> Seam recommends using that package instead for simpler dependency management.
 
 Add this as a dependency to your project using [npm] with
 
@@ -55,30 +56,29 @@ Refer to the next section for keeping the types updated.
 
 #### Keeping up with the latest types
 
-This package depends on [seamapi-types] for the latest TypeScript types.
+This package depends on [@seamapi/types] for the latest TypeScript types.
 New versions of this SDK are generally not released when new types are published.
 Unless your project frequently runs a blanket `npm update`,
 the types will become outdated with the Seam API over time.
 Thus, users of this package should explicitly install the types with
 
 ```
-$ npm install -D seamapi-types
+$ npm install -D @seamapi/types
 ```
 
 and update them when consuming new API features with
 
 ```
-$ npm install -D seamapi-types
+$ npm install -D @seamapi/types@latest
 ```
-
-[seamapi-types]: https://github.com/seamapi/seamapi-types/
 
 ## Usage
 
 First, create a webhook using the Seam API or Seam Console
 and obtain a Seam webhook secret.
 
-_This example is for [Express], see the [Svix docs for more examples in specific frameworks](https://docs.svix.com/receiving/verifying-payloads/how)._
+> [!TIP]
+> This example is for [Express], see the [Svix docs for more examples in specific frameworks](https://docs.svix.com/receiving/verifying-payloads/how).
 
 ```js
 import { SeamWebhook } from '@seamapi/webhook'
