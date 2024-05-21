@@ -95,7 +95,10 @@ app.post(
   '/webhook',
   bodyParser.raw({ type: 'application/json' }),
   (req, res) => {
+    const payload = req.body
+    const headers = req.headers
     let data
+
     try {
       data = webhook.verify(payload, headers)
     } catch {
