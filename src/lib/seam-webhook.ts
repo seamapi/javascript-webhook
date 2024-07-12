@@ -10,7 +10,7 @@ export class SeamWebhook {
 
   verify(payload: string, headers: Record<string, string>): SeamEvent {
     const normalizedHeaders = Object.fromEntries(
-      Object.entries(headers).map(([key, value]) => [key.toLowerCase(), value])
+      Object.entries(headers).map(([key, value]) => [key.toLowerCase(), value]),
     )
 
     return this.#webhook.verify(payload, normalizedHeaders) as SeamEvent
