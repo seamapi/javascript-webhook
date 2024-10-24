@@ -75,7 +75,7 @@ $ npm install -D @seamapi/types@latest
 ## Usage
 
 The Seam API implements webhooks using [Svix](https://www.svix.com).
-This SDK exports a thin wrapper `Seam::Webhook` around the svix package.
+This SDK exports a thin wrapper `SeamWebhook` around the svix package.
 Use it to parse and validate [Seam webhook events](https://docs.seam.co/latest/developer-tools/webhooks).
 
 Refer to the [Svix docs on Consuming Webhooks](https://docs.svix.com/receiving/introduction)
