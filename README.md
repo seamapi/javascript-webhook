@@ -74,11 +74,13 @@ $ npm install -D @seamapi/types@latest
 
 ## Usage
 
-First, create a webhook using the Seam API or Seam Console
-and obtain a Seam webhook secret.
+The Seam API implements webhooks using [Svix](https://www.svix.com).
+This SDK exports a thin wrapper `Seam::Webhook` around the svix package.
+Use it to parse and validate [Seam webhook events](https://docs.seam.co/latest/developer-tools/webhooks).
 
 > [!TIP]
-> This example is for [Express], see the [Svix docs for more examples in specific frameworks](https://docs.svix.com/receiving/verifying-payloads/how).
+> This example is for [Express](https://expressjs.com/),
+> see the [Svix docs for more examples in specific frameworks](https://docs.svix.com/receiving/verifying-payloads/how).
 
 ```js
 import { env } from 'node:process'
@@ -119,8 +121,6 @@ app.listen(8080, () => {
   console.log('Ready to receive webhooks at http://localhost:8080/webhook')
 })
 ```
-
-[Express]: https://expressjs.com/
 
 ## Development and Testing
 
