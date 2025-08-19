@@ -20,8 +20,8 @@ jobs:
         os:
           - ubuntu-latest
         node:
-          - '18'
           - '20'
+          - '22'
         include:
           - os: ubuntu-latest
             os_name: Linux
@@ -42,8 +42,8 @@ jobs:
       fail-fast: false
       matrix:
         node:
-          - '18'
           - '20'
+          - '22'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -67,8 +67,8 @@ jobs:
         os:
           - ubuntu-latest
         node:
-          - '18'
           - '20'
+          - '22'
         include:
           - os: ubuntu-latest
             os_name: Linux
@@ -83,19 +83,19 @@ jobs:
           name: ${{ needs.build.outputs.artifact_name }}
           path: .
       - name: Find packages
-        uses: tj-actions/glob@v17
+        uses: tj-actions/glob@v22
         id: packages
         with:
           files: '*.tgz'
       - name: Create package.json
-        uses: DamianReeves/write-file-action@v1.2
+        uses: DamianReeves/write-file-action@v1.3
         with:
           write-mode: overwrite
           path: package.json
           contents: |
             {"type":"module"}
       - name: Create index.js
-        uses: DamianReeves/write-file-action@v1.2
+        uses: DamianReeves/write-file-action@v1.3
         with:
           write-mode: overwrite
           path: index.js
@@ -113,8 +113,8 @@ jobs:
       fail-fast: false
       matrix:
         node:
-          - '18'
           - '20'
+          - '22'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
