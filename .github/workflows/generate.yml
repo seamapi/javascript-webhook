@@ -31,10 +31,10 @@ jobs:
         uses: ./.github/actions/setup
         with:
           install_dependencies: 'false'
-      - name: Sync @seamapi/types version in peerDependencies
+      - name: Sync @seamapi/http version in peerDependencies
         run: |
           sudo apt-get install -y jq moreutils
-          jq '.peerDependencies."@seamapi/types" = .devDependencies."@seamapi/types"' package.json | sponge package.json
+          jq '.peerDependencies."@seamapi/http" = .devDependencies."@seamapi/http"' package.json | sponge package.json
       - name: Normalize package-lock.json
         run: npm install
       - name: Commit
