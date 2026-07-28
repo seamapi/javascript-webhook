@@ -1,4 +1,4 @@
-import type { SeamEvent } from '@seamapi/types/connect'
+import type { SeamEvent } from '@seamapi/http/connect'
 import { Webhook } from 'svix'
 
 export class SeamWebhook {

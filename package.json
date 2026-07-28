@@ -71,10 +71,10 @@
     }
   },
   "peerDependencies": {
-    "@seamapi/types": "^1.166.0"
+    "@seamapi/http": "^2.0.0"
   },
   "peerDependenciesMeta": {
-    "@seamapi/types": {
+    "@seamapi/http": {
       "optional": true
     }
   },
@@ -82,7 +82,7 @@
     "svix": "^1.15.0"
   },
   "devDependencies": {
-    "@seamapi/types": "^1.166.0",
+    "@seamapi/http": "^2.0.0",
     "@types/node": "^24.10.9",
     "ava": "^8.0.1",
     "c8": "^12.0.0",

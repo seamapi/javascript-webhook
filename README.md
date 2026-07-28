@@ -56,20 +56,20 @@ Refer to the next section for keeping the types updated.
 
 #### Keeping up with the latest types
 
-This package depends on [@seamapi/types] for the latest TypeScript types.
+This package depends on [@seamapi/http] for the latest TypeScript `SeamEvent` type.
 New versions of this SDK are generally not released when new types are published.
 Unless your project frequently runs a blanket `npm update`,
 the types will become outdated with the Seam API over time.
-Thus, users of this package should explicitly install the types with
+Thus, users of this package should explicitly install the new types with
 
 ```
-$ npm install -D @seamapi/types
+$ npm install -D @seamapi/http
 ```
 
 and update them when consuming new API features with
 
 ```
-$ npm install -D @seamapi/types@latest
+$ npm install -D @seamapi/http@latest
 ```
 
 ## Usage
