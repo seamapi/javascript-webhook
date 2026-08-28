@@ -29,8 +29,6 @@ export class SeamWebhook {
     } catch (error) {
       if (error instanceof WebhookVerificationError) throw error
 
-      // svix parses the body only once the signature matches,
-      // so anything thrown past that point is an unreadable payload.
       throw new SeamInvalidWebhookPayloadError(
         `The verified webhook payload is not valid JSON: ${getErrorMessage(error)}`,
         { cause: error },
