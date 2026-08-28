@@ -81,6 +81,31 @@ Use it to parse and validate [Seam webhook events](https://docs.seam.co/latest/d
 Refer to the [Svix docs on Consuming Webhooks](https://docs.svix.com/receiving/introduction)
 for an in-depth guide on best-practices for handling webhooks in your application.
 
+Verification failures throw Svix's `WebhookVerificationError`, re-exported as
+`SeamWebhookVerificationError`: treat the payload as forged and respond with an
+error status so Svix retries.
+
+A payload that is correctly signed but cannot be read as a Seam event throws a
+`SeamInvalidWebhookPayloadError` instead. Verification has already succeeded by
+then, so the payload is genuinely from Seam and will never become readable:
+log it as a bug rather than reporting a verification failure and letting Svix
+retry it through its full backoff schedule. Use `isSeamInvalidWebhookPayloadError`
+to discriminate.
+
+```js
+import { isSeamInvalidWebhookPayloadError, SeamWebhook } from '@seamapi/webhook'
+
+try {
+  data = webhook.verify(req.body, req.headers)
+} catch (err) {
+  if (isSeamInvalidWebhookPayloadError(err)) {
+    console.error('Unreadable Seam webhook payload', err)
+    return res.status(204).send()
+  }
+  return res.status(400).send()
+}
+```
+
 > [!TIP]
 > This example is for [Express](https://expressjs.com/),
 > see the [Svix docs for more examples in specific frameworks](https://docs.svix.com/receiving/verifying-payloads/how).
