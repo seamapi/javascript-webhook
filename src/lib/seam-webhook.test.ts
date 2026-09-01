@@ -8,8 +8,7 @@ import { SeamWebhook } from './seam-webhook.js'
 
 const secret = `whsec_${Buffer.from('secret'.repeat(4)).toString('base64')}`
 
-// Signs a payload the way svix does, so these tests exercise the real
-// verification path rather than stubbing it out.
+// Signs a payload the way svix does, so these tests exercise real verification.
 const signedHeaders = (
   payload: string,
   { id = 'msg_1', timestamp = Math.floor(Date.now() / 1000) } = {},
@@ -86,9 +85,6 @@ test('SeamWebhook: rejects a stale timestamp', (t) => {
   )
 })
 
-// A signed but unreadable body is permanently unreadable: the sender is
-// genuinely Seam, so retrying can never help. It must not look like a
-// verification failure, which is the signal to retry.
 for (const [label, payload] of [
   ['not JSON', '{not json'],
   ['a JSON array', '[1, 2]'],

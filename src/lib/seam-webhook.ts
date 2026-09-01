@@ -14,10 +14,7 @@ export class SeamWebhook {
    * Verify and parse an incoming HTTP webhook request.
    *
    * @throws {SeamWebhookVerificationError} When the signature does not match.
-   *   Respond with an error status so the sender retries.
-   * @throws {SeamInvalidWebhookPayloadError} When the signature matches but the
-   *   body is not a Seam event. The body will never become readable, so report
-   *   it rather than letting the sender retry.
+   * @throws {SeamInvalidWebhookPayloadError} When it does but the body is not an event.
    */
   verify(payload: string, headers: Record<string, string>): SeamEvent {
     const normalizedHeaders = Object.fromEntries(
@@ -28,9 +25,8 @@ export class SeamWebhook {
     try {
       verified = this.#webhook.verify(payload, normalizedHeaders)
     } catch (error) {
-      // svix JSON.parses after the signature checks out, so a SyntaxError here
-      // is a genuinely-from-Seam body that is permanently unreadable, not a
-      // failed verification.
+      // svix JSON.parses after checking the signature, so this is not a
+      // verification failure.
       if (error instanceof SyntaxError) {
         throw new SeamInvalidWebhookPayloadError(
           `The verified webhook payload is not valid JSON: ${error.message}`,
