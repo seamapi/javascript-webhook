@@ -16,7 +16,7 @@ export class SeamWebhook {
    * @throws {SeamWebhookVerificationError} When the signature does not match.
    * @throws {SeamInvalidWebhookPayloadError} When it does but the body is not an event.
    */
-  verify(payload: string, headers: Record<string, string>): SeamEvent {
+  verify(payload: string, headers: Record<string, string>): VerifiedSeamEvent {
     const normalizedHeaders = Object.fromEntries(
       Object.entries(headers).map(([key, value]) => [key.toLowerCase(), value]),
     )
@@ -41,8 +41,27 @@ export class SeamWebhook {
       )
     }
 
-    return verified
+    // Non-enumerable so JSON.stringify(event) does not embed a second, escaped
+    // copy of the payload inside the payload.
+    Object.defineProperty(verified, 'raw_json', {
+      value: () => payload,
+      enumerable: false,
+    })
+
+    return verified as VerifiedSeamEvent
   }
+}
+
+/**
+ * A verified event, plus the payload it was parsed from.
+ *
+ * The generated event types cover only the fields they were generated for, so
+ * a field Seam adds to an existing event between SDK releases is reachable
+ * through `raw_json()` and nowhere else.
+ */
+export type VerifiedSeamEvent = SeamEvent & {
+  /** The payload this event was parsed from, as JSON. */
+  raw_json: () => string
 }
 
 const isSeamEvent = (value: unknown): value is SeamEvent => {

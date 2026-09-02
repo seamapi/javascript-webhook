@@ -103,3 +103,41 @@ for (const [label, payload] of [
     })
   })
 }
+
+test('SeamWebhook: raw_json returns the payload verbatim', (t) => {
+  const payload = JSON.stringify({
+    event_id: 'event_1',
+    event_type: 'access_code.created',
+    brand_new_field: 'kept',
+  })
+
+  const event = webhook.verify(payload, signedHeaders(payload))
+
+  t.is(event.raw_json(), payload)
+  t.is(JSON.parse(event.raw_json())['brand_new_field'], 'kept')
+})
+
+test('SeamWebhook: raw_json works for an unrecognized event type', (t) => {
+  const payload = JSON.stringify({
+    event_id: 'event_1',
+    event_type: 'future.thing',
+    nested: { x: 1 },
+  })
+
+  const event = webhook.verify(payload, signedHeaders(payload))
+
+  t.is(event.raw_json(), payload)
+})
+
+// Enumerable would embed a second, escaped copy of the payload inside itself.
+test('SeamWebhook: raw_json is not serialized with the event', (t) => {
+  const payload = JSON.stringify({
+    event_id: 'event_1',
+    event_type: 'access_code.created',
+  })
+
+  const event = webhook.verify(payload, signedHeaders(payload))
+
+  t.false(JSON.stringify(event).includes('raw_json'))
+  t.false(Object.keys(event).includes('raw_json'))
+})
