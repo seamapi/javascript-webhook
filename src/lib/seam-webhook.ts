@@ -25,8 +25,6 @@ export class SeamWebhook {
     try {
       verified = this.#webhook.verify(payload, normalizedHeaders)
     } catch (error) {
-      // svix JSON.parses after checking the signature, so this is not a
-      // verification failure.
       if (error instanceof SyntaxError) {
         throw new SeamInvalidWebhookPayloadError(
           `The verified webhook payload is not valid JSON: ${error.message}`,
@@ -41,8 +39,7 @@ export class SeamWebhook {
       )
     }
 
-    // Non-enumerable so JSON.stringify(event) does not embed a second, escaped
-    // copy of the payload inside the payload.
+    // Non-enumerable: JSON.stringify(event) must not embed a copy of itself.
     Object.defineProperty(verified, 'raw_json', {
       value: () => payload,
       enumerable: false,
@@ -52,15 +49,8 @@ export class SeamWebhook {
   }
 }
 
-/**
- * A verified event, plus the payload it was parsed from.
- *
- * The generated event types cover only the fields they were generated for, so
- * a field Seam adds to an existing event between SDK releases is reachable
- * through `raw_json()` and nowhere else.
- */
+/** A verified event, plus the payload it was parsed from. */
 export type VerifiedSeamEvent = SeamEvent & {
-  /** The payload this event was parsed from, as JSON. */
   raw_json: () => string
 }
 

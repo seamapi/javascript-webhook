@@ -129,7 +129,6 @@ test('SeamWebhook: raw_json works for an unrecognized event type', (t) => {
   t.is(event.raw_json(), payload)
 })
 
-// Enumerable would embed a second, escaped copy of the payload inside itself.
 test('SeamWebhook: raw_json is not serialized with the event', (t) => {
   const payload = JSON.stringify({
     event_id: 'event_1',
