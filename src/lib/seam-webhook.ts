@@ -6,8 +6,19 @@ import { SeamInvalidWebhookPayloadError } from './seam-invalid-webhook-payload-e
 export class SeamWebhook {
   readonly #webhook: Webhook
 
-  constructor(secret: string) {
-    this.#webhook = new Webhook(secret)
+  constructor()
+  constructor(secret: string)
+  constructor(secret?: string) {
+    const signingSecret =
+      arguments.length === 0 ? getWebhookSecretFromEnv() : secret
+
+    if (typeof signingSecret !== 'string' || !hasSigningKey(signingSecret)) {
+      throw new Error(
+        'A non-empty webhook secret is required: pass a secret or set SEAM_WEBHOOK_SECRET.',
+      )
+    }
+
+    this.#webhook = new Webhook(signingSecret)
   }
 
   /**
@@ -42,6 +53,18 @@ export class SeamWebhook {
     }
 
     return data
+  }
+}
+
+const getWebhookSecretFromEnv = (): string | undefined => {
+  return globalThis.process?.env?.SEAM_WEBHOOK_SECRET
+}
+
+const hasSigningKey = (secret: string): boolean => {
+  try {
+    return atob(secret.replace(/^whsec_/, '')).length > 0
+  } catch {
+    return false
   }
 }
 
