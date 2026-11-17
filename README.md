@@ -81,11 +81,8 @@ Use it to parse and validate [Seam webhook events](https://docs.seam.co/latest/d
 Refer to the [Svix docs on Consuming Webhooks](https://docs.svix.com/receiving/introduction)
 for an in-depth guide on best-practices for handling webhooks in your application.
 
-Construct with `new SeamWebhook()` to read `SEAM_WEBHOOK_SECRET` from the
-process environment at construction time (also applies to `undefined`).
-Pass `new SeamWebhook(secret)` to override the environment explicitly.
-A missing or empty signing key throws a configuration error immediately;
-an explicit empty string never falls back to the environment.
+`new SeamWebhook()` reads `SEAM_WEBHOOK_SECRET` when set.
+Otherwise, pass your webhook signing secret explicitly with `new SeamWebhook(secret)`.
 
 Verification failures throw Svix's `WebhookVerificationError`, re-exported as
 `SeamWebhookVerificationError`.
@@ -93,6 +90,9 @@ A payload that is correctly signed but unreadable throws a `SeamInvalidWebhookPa
 
 ```js
 import { isSeamInvalidWebhookPayloadError, SeamWebhook } from '@seamapi/webhook'
+
+const webhook = new SeamWebhook(secret)
+let data
 
 try {
   data = webhook.verify(req.body, req.headers)
