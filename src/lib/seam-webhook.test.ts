@@ -34,24 +34,24 @@ test('SeamWebhook: constructor', (t) => {
 })
 
 const setWebhookSecret = (t: ExecutionContext, value: string | undefined) => {
-  const previous = env['SEAM_WEBHOOK_SECRET']
+  const previous = env.SEAM_WEBHOOK_SECRET
   t.teardown(() => {
-    if (previous === undefined) delete env['SEAM_WEBHOOK_SECRET']
-    else env['SEAM_WEBHOOK_SECRET'] = previous
+    if (previous === undefined) delete env.SEAM_WEBHOOK_SECRET
+    else env.SEAM_WEBHOOK_SECRET = previous
   })
-  if (value === undefined) delete env['SEAM_WEBHOOK_SECRET']
-  else env['SEAM_WEBHOOK_SECRET'] = value
+  if (value === undefined) delete env.SEAM_WEBHOOK_SECRET
+  else env.SEAM_WEBHOOK_SECRET = value
 }
 
 test.serial('SeamWebhook: verifies using only the environment secret', (t) => {
   setWebhookSecret(t, `whsec_${secret}`)
 
-  for (const webhook of [new SeamWebhook(), new SeamWebhook(undefined)]) {
-    t.is(
-      webhook.verify(eventPayload, signHeaders(eventPayload)).event_type,
-      'device.connected',
-    )
-  }
+  const webhook = new SeamWebhook()
+
+  t.is(
+    webhook.verify(eventPayload, signHeaders(eventPayload)).event_type,
+    'device.connected',
+  )
 })
 
 test.serial(
@@ -106,11 +106,24 @@ for (const emptySecret of ['', 'whsec_', 'whsec_=', 'whsec_A']) {
   )
 }
 
+for (const invalidSecret of [undefined, null, false, 42, {}, 'not base64']) {
+  test.serial(
+    `SeamWebhook: explicit invalid secret ${JSON.stringify(invalidSecret)} never falls back`,
+    (t) => {
+      setWebhookSecret(t, secret)
+
+      t.throws(() => Reflect.construct(SeamWebhook, [invalidSecret]), {
+        message: /non-empty webhook secret.*SEAM_WEBHOOK_SECRET/,
+      })
+    },
+  )
+}
+
 test.serial('SeamWebhook: reads the environment at each construction', (t) => {
   setWebhookSecret(t, secret)
   const first = new SeamWebhook()
   const otherSecret = 'WrongQ9r8GKYqrTwjUPD8ILPZIo2LaLa'
-  env['SEAM_WEBHOOK_SECRET'] = otherSecret
+  env.SEAM_WEBHOOK_SECRET = otherSecret
   const second = new SeamWebhook()
 
   t.is(
@@ -126,6 +139,39 @@ test.serial('SeamWebhook: reads the environment at each construction', (t) => {
   )
   t.throws(() => second.verify(eventPayload, signHeaders(eventPayload)))
 })
+
+for (const { name, value } of [
+  { name: 'process', value: undefined },
+  { name: 'process.env', value: {} },
+]) {
+  test.serial(`SeamWebhook: handles runtimes without ${name}`, (t) => {
+    const descriptor = Object.getOwnPropertyDescriptor(globalThis, 'process')
+    if (descriptor === undefined) throw new Error('Expected Node.js process')
+
+    const construct = (signingSecret?: string) => {
+      Object.defineProperty(globalThis, 'process', {
+        configurable: true,
+        value,
+      })
+      try {
+        return signingSecret === undefined
+          ? new SeamWebhook()
+          : new SeamWebhook(signingSecret)
+      } finally {
+        Object.defineProperty(globalThis, 'process', descriptor)
+      }
+    }
+
+    t.throws(() => construct(), {
+      message: /non-empty webhook secret.*SEAM_WEBHOOK_SECRET/,
+    })
+    t.is(
+      construct(secret).verify(eventPayload, signHeaders(eventPayload))
+        .event_type,
+      'device.connected',
+    )
+  })
+}
 
 test('SeamWebhook: verifies and parses a signed event', (t) => {
   const webhook = new SeamWebhook(secret)
