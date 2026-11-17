@@ -1,3 +1,6 @@
+import { Buffer } from 'node:buffer'
+import { env } from 'node:process'
+
 import type { SeamEvent } from '@seamapi/http/connect'
 import { Webhook, WebhookVerificationError } from 'svix'
 
@@ -6,7 +9,16 @@ import { SeamInvalidWebhookPayloadError } from './seam-invalid-webhook-payload-e
 export class SeamWebhook {
   readonly #webhook: Webhook
 
-  constructor(secret: string) {
+  constructor(secret = env['SEAM_WEBHOOK_SECRET']) {
+    if (
+      !secret ||
+      Buffer.from(secret.replace(/^whsec_/, ''), 'base64').length === 0
+    ) {
+      throw new Error(
+        'A non-empty webhook secret is required: pass a secret or set SEAM_WEBHOOK_SECRET.',
+      )
+    }
+
     this.#webhook = new Webhook(secret)
   }
 
