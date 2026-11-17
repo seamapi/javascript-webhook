@@ -83,6 +83,7 @@ for an in-depth guide on best-practices for handling webhooks in your applicatio
 
 `new SeamWebhook()` reads `SEAM_WEBHOOK_SECRET` when set.
 Otherwise, pass your webhook signing secret explicitly with `new SeamWebhook(secret)`.
+An explicit secret takes precedence over the environment variable.
 
 Verification failures throw Svix's `WebhookVerificationError`, re-exported as
 `SeamWebhookVerificationError`.
